@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+@import "./styles/animations.css";
+
+@theme {
+  --color-light: #eef4f9;
+  --color-gray: #7A7777;
+  --fontSize-largest: 64px;
+  --font-family-sans: "Work Sans", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  * {
+    font-family: "Work Sans", sans-serif;
+    padding: 0;
+    margin: 0;
+  }
+
+  html {
+    font-family: "Work Sans", sans-serif, ui-sans-serif, system-ui;
+  }
+
+  body {
+    font-family: "Work Sans", sans-serif, ui-sans-serif, system-ui;
+  }
+}
