@@ -66,12 +66,14 @@ src/
 ## Key Features
 
 ### Hero Section
+
 - Auto-rotating background images (5-second intervals)
 - Animated text reveals with word-by-word effects
 - Preview controller for next slide
 - Manual navigation
 
 ### Products Carousel
+
 - Unique circular layout with drag interaction
 - Mouse and touch support
 - Smooth lerp-based animations
@@ -79,6 +81,7 @@ src/
 - Animated product information transitions
 
 ### Performance
+
 - Image preloading for hero section
 - Lazy loading for carousel images
 - Optimized re-renders with proper React patterns
@@ -87,20 +90,25 @@ src/
 ## Development Decisions
 
 ### Why Custom Animations?
+
 Instead of using animation libraries like Framer Motion, I implemented custom CSS keyframes and JavaScript-based animations. This keeps the bundle small and gives precise control over timing.
 
 ### State Management
+
 No Redux or external state management needed. The app uses React's built-in hooks (useState, useEffect, useRef) with custom hooks for complex logic separation.
 
 ### Component Architecture
+
 Each major feature has its own hook (useHeroSection, useProductsSection) that handles all the logic, keeping components clean and focused on rendering.
 
 ### Path Aliases
+
 The project uses path aliases for cleaner imports:
+
 ```typescript
-import { Product } from '@types'
-import { ANIMATION_CONFIG } from '@constants'
-import { lerp } from '@utils'
+import { Product } from "@types";
+import { ANIMATION_CONFIG } from "@constants";
+import { lerp } from "@utils";
 ```
 
 ## Browser Support
@@ -113,6 +121,7 @@ import { lerp } from '@utils'
 ## Performance Notes
 
 The initial bundle includes large PNG images. For production, images should be optimized:
+
 - Convert to WebP/AVIF formats
 - Compress PNGs
 - Expected 70-80% size reduction
@@ -122,17 +131,21 @@ The code already includes lazy loading and preloading strategies to handle this.
 ## Customization
 
 ### Changing Animation Timing
+
 Edit `src/constants/animation.ts`:
+
 ```typescript
 export const ANIMATION_CONFIG = {
-  HERO_ROTATION_INTERVAL: 5000,  // Milliseconds between slides
-  WORD_ANIMATION_DELAY: 0.15,    // Delay between word animations
+  HERO_ROTATION_INTERVAL: 5000, // Milliseconds between slides
+  WORD_ANIMATION_DELAY: 0.15, // Delay between word animations
   // ...
-}
+};
 ```
 
 ### Modifying Products
+
 Edit `src/data/products.ts`:
+
 ```typescript
 export const products: Product[] = [
   {
@@ -142,10 +155,11 @@ export const products: Product[] = [
     image: yourImage,
   },
   // ...
-]
+];
 ```
 
 ### Responsive Breakpoints
+
 Edit `src/constants/breakpoints.ts` to adjust mobile/desktop thresholds.
 
 ## Known Issues & Future Improvements
@@ -158,34 +172,17 @@ Edit `src/constants/breakpoints.ts` to adjust mobile/desktop thresholds.
 ## Architecture Highlights
 
 ### Separation of Concerns
+
 Each component folder contains:
+
 - `index.tsx` - Presentational component
 - `useComponentName.tsx` - Business logic hook
 - Component-specific sub-components when needed
 
 ### Type Safety
+
 All components have proper TypeScript interfaces. Shared types live in `src/types/` for reusability.
 
 ### Constants Over Magic Numbers
+
 All timing, sizing, and configuration values are extracted to constant files instead of being scattered throughout components.
-
-## Build Output
-
-Production build creates optimized assets in `dist/`:
-```bash
-npm run build
-
-# Typical output:
-# dist/index.html         ~0.36 kB
-# dist/assets/*.png       ~3.8 MB (needs optimization)
-# dist/assets/*.css       ~17 kB
-# dist/assets/*.js        ~209 kB
-```
-
-## License
-
-This is a test assignment project.
-
----
-
-Built with attention to performance, maintainability, and modern React patterns.
