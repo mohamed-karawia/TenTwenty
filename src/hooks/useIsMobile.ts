@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
+import { BREAKPOINTS } from "../constants";
 
-/**
- * Custom hook to detect if the viewport is mobile size (< 768px)
- * @returns boolean indicating if the current viewport is mobile
- */
 export const useIsMobile = (): boolean => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const newIsMobile = window.innerWidth < BREAKPOINTS.MOBILE;
+      setIsMobile((prev) => (prev === newIsMobile ? prev : newIsMobile));
     };
 
     checkMobile();

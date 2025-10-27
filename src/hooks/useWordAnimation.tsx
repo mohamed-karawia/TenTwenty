@@ -1,16 +1,11 @@
-interface UseWordAnimationOptions {
-  text: string;
-  delayBetweenWords?: number;
-  shouldAnimate?: boolean;
-  startDelay?: number;
-}
+import { WordAnimationOptions } from "../types";
 
 export const useWordAnimation = ({
   text,
   delayBetweenWords = 0.15,
   shouldAnimate = true,
   startDelay = 0,
-}: UseWordAnimationOptions) => {
+}: WordAnimationOptions) => {
   const words = text.split(" ");
 
   const animatedText = shouldAnimate ? (

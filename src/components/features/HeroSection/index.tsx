@@ -11,17 +11,27 @@ const HeroSection = () => {
     heroTitle1,
     heroTitle2,
     handleNextSlide,
+    imagesLoaded,
   } = useHeroSection();
 
   return (
     <div className="h-screen relative overflow-hidden">
+      {!imagesLoaded && (
+        <div className="absolute inset-0 bg-light flex items-center justify-center">
+          <div className="text-gray text-lg">Loading...</div>
+        </div>
+      )}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-300 ${
+          imagesLoaded ? "opacity-100" : "opacity-0"
+        }`}
         style={{ backgroundImage: `url(${images[previousIndex]})` }}
       />
       <div
         key={key}
-        className="absolute inset-0 bg-cover bg-center animate-expand-vertical"
+        className={`absolute inset-0 bg-cover bg-center animate-expand-vertical ${
+          imagesLoaded ? "opacity-100" : "opacity-0"
+        }`}
         style={{ backgroundImage: `url(${images[currentIndex]})` }}
       />
 

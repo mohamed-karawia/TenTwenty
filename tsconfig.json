@@ -19,7 +19,12 @@
     "paths": {
       "@images/*": ["src/assets/images/*"],
       "@icons/*": ["src/assets/icons/*"],
-      "@hooks/*": ["src/hooks/*"]
+      "@hooks/*": ["src/hooks/*"],
+      "@constants/*": ["src/constants/*"],
+      "@types/*": ["src/types/*"],
+      "@utils/*": ["src/utils/*"],
+      "@data/*": ["src/data/*"],
+      "@components/*": ["src/components/*"]
     }
   },
   "include": ["src"]

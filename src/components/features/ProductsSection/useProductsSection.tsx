@@ -1,29 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-import { useIsMobile } from "../../hooks/useIsMobile";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useWordAnimation } from "@hooks/useWordAnimation";
-
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-}
+import { Product } from "../../../types";
+import { lerp } from "../../../utils";
+import {
+  ANIMATION_CONFIG,
+  CAROUSEL_CONFIG,
+  CAROUSEL_DIMENSIONS,
+  INTERSECTION_OBSERVER_CONFIG,
+} from "../../../constants";
 
 interface UseProductsSectionProps {
   products: Product[];
 }
 
-function lerp(start: number, stop: number, amt: number): number {
-  return (1 - amt) * start + amt * stop;
-}
-
 const useProductsSection = ({ products }: UseProductsSectionProps) => {
-  const len = products.length;
+  const productCount = products.length;
   const isMobile = useIsMobile();
-  const ARC_SIZE = isMobile ? 70 : 150;
+  const arcSize = isMobile
+    ? CAROUSEL_DIMENSIONS.MOBILE.ARC_SIZE
+    : CAROUSEL_DIMENSIONS.DESKTOP.ARC_SIZE;
 
-  // Calculate initial degree for second slide (index 1)
-  const initialDeg = -(ARC_SIZE / len) * 1;
+  const initialDeg = -(arcSize / productCount) * 1;
 
   const [currentIndex, setCurrentIndex] = useState(1);
   const [prevIndex, setPrevIndex] = useState(1);
@@ -41,7 +39,7 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
 
   const qualityProductsText = useWordAnimation({
     text: "Quality Products",
-    delayBetweenWords: 0.15,
+    delayBetweenWords: ANIMATION_CONFIG.WORD_ANIMATION_DELAY,
     shouldAnimate: isVisible,
   });
   const descriptionText = useWordAnimation({
@@ -50,9 +48,15 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
     shouldAnimate: titleAnimated,
   });
 
-  const cardWidth = isMobile ? 232.67 : 434.9;
-  const cardHeight = isMobile ? 331.27 : 619.21;
-  const carouselHeight = isMobile ? 400 : 650;
+  const cardWidth = isMobile
+    ? CAROUSEL_DIMENSIONS.MOBILE.CARD_WIDTH
+    : CAROUSEL_DIMENSIONS.DESKTOP.CARD_WIDTH;
+  const cardHeight = isMobile
+    ? CAROUSEL_DIMENSIONS.MOBILE.CARD_HEIGHT
+    : CAROUSEL_DIMENSIONS.DESKTOP.CARD_HEIGHT;
+  const carouselHeight = isMobile
+    ? CAROUSEL_DIMENSIONS.MOBILE.CAROUSEL_HEIGHT
+    : CAROUSEL_DIMENSIONS.DESKTOP.CAROUSEL_HEIGHT;
 
   prevRef.current = deg;
 
@@ -64,11 +68,11 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
             setIsVisible(true);
             setTimeout(() => {
               setTitleAnimated(true);
-            }, 300);
+            }, ANIMATION_CONFIG.TITLE_ANIMATION_DELAY);
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: INTERSECTION_OBSERVER_CONFIG.THRESHOLD }
     );
 
     if (containerRef.current) {
@@ -85,7 +89,7 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
   const move = () => {
     const next = nextRef.current;
     const prev = prevRef.current;
-    const newDeg = lerp(prev, next, 0.2);
+    const newDeg = lerp(prev, next, ANIMATION_CONFIG.LERP_AMOUNT);
 
     if (newDeg !== prev) {
       setDeg(newDeg);
@@ -94,7 +98,9 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
       rendering.current = false;
     }
 
-    const index = Math.round(Math.abs(((newDeg / ARC_SIZE) * len) % len));
+    const index = Math.round(
+      Math.abs(((newDeg / arcSize) * productCount) % productCount)
+    );
     if (index !== indexRef.current) {
       setPrevIndex(indexRef.current);
       indexRef.current = index;
@@ -103,7 +109,7 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
 
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 800);
+      }, ANIMATION_CONFIG.TRANSITION_DURATION);
     }
   };
 
@@ -113,8 +119,11 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
 
     const tryMove = (next: number) => {
       _deg = nextRef.current += next;
-      _deg = nextRef.current = Math.min(_deg, 3);
-      _deg = nextRef.current = Math.max(_deg, -ARC_SIZE + 3);
+      _deg = nextRef.current = Math.min(_deg, CAROUSEL_CONFIG.BOUNDARY_OFFSET);
+      _deg = nextRef.current = Math.max(
+        _deg,
+        -arcSize + CAROUSEL_CONFIG.BOUNDARY_OFFSET
+      );
       if (!rendering.current) {
         rendering.current = true;
         requestAnimationFrame(move);
@@ -122,7 +131,7 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
     };
 
     const onMouseMove = ({ movementX }: MouseEvent) => {
-      tryMove(movementX / 30);
+      tryMove(movementX / CAROUSEL_CONFIG.MOUSE_SENSITIVITY);
     };
 
     let prevTouchPageX: number | undefined;
@@ -130,7 +139,7 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
       const pageX = touches[0].pageX;
       if (prevTouchPageX) {
         const movementX = pageX - prevTouchPageX;
-        tryMove(movementX / 10);
+        tryMove(movementX / CAROUSEL_CONFIG.TOUCH_SENSITIVITY);
       }
       prevTouchPageX = pageX;
     };
@@ -141,11 +150,11 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
       document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("touchend", onMouseUp);
 
-      const angle = ARC_SIZE / len;
+      const angle = arcSize / productCount;
       const mod = _deg % angle;
       const diff = angle - Math.abs(mod);
       const sign = Math.sign(_deg);
-      const max = angle * (len - 1);
+      const max = angle * (productCount - 1);
 
       if (_deg > 0) {
         tryMove(-_deg);
@@ -177,11 +186,11 @@ const useProductsSection = ({ products }: UseProductsSectionProps) => {
     wrapperRef,
     qualityProductsText,
     descriptionText,
-    ARC_SIZE,
+    arcSize,
     cardWidth,
     cardHeight,
     carouselHeight,
-    len,
+    productCount,
     onMouseDown,
   };
 };

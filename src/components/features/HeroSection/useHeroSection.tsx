@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useWordAnimation } from "@hooks/useWordAnimation";
+import { ANIMATION_CONFIG, HERO_ANIMATION } from "../../../constants";
+import { preloadImages } from "../../../utils";
 import bgImage1 from "@images/bg-1.png";
 import bgImage2 from "@images/bg-2.png";
 import bgImage3 from "@images/bg-3.png";
@@ -10,22 +12,29 @@ const useHeroSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [previousIndex, setPreviousIndex] = useState(0);
   const [key, setKey] = useState(0);
-  const intervalRef = useRef<number | null>(null);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    preloadImages(images).then(() => {
+      setImagesLoaded(true);
+    });
+  }, []);
 
   const welcomeText = useWordAnimation({
     text: "Welcome To TenTwenty Farms",
-    delayBetweenWords: 0.15,
-    startDelay: 0,
+    delayBetweenWords: ANIMATION_CONFIG.WORD_ANIMATION_DELAY,
+    startDelay: HERO_ANIMATION.WELCOME_TEXT_START_DELAY,
   });
   const heroTitle1 = useWordAnimation({
     text: "From our Farms",
-    delayBetweenWords: 0.15,
-    startDelay: 0.6,
+    delayBetweenWords: ANIMATION_CONFIG.WORD_ANIMATION_DELAY,
+    startDelay: HERO_ANIMATION.TITLE_LINE_1_START_DELAY,
   });
   const heroTitle2 = useWordAnimation({
     text: "To your hands",
-    delayBetweenWords: 0.15,
-    startDelay: 1.05,
+    delayBetweenWords: ANIMATION_CONFIG.WORD_ANIMATION_DELAY,
+    startDelay: HERO_ANIMATION.TITLE_LINE_2_START_DELAY,
   });
 
   const handleNextSlide = () => {
@@ -33,8 +42,9 @@ const useHeroSection = () => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
     setKey((prev) => prev + 1);
 
-    if (intervalRef.current) {
+    if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
 
     intervalRef.current = setInterval(() => {
@@ -43,7 +53,7 @@ const useHeroSection = () => {
         return (prev + 1) % images.length;
       });
       setKey((prev) => prev + 1);
-    }, 5000);
+    }, ANIMATION_CONFIG.HERO_ROTATION_INTERVAL);
   };
 
   useEffect(() => {
@@ -53,11 +63,12 @@ const useHeroSection = () => {
         return (prev + 1) % images.length;
       });
       setKey((prev) => prev + 1);
-    }, 5000);
+    }, ANIMATION_CONFIG.HERO_ROTATION_INTERVAL);
 
     return () => {
-      if (intervalRef.current) {
+      if (intervalRef.current !== null) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
   }, [images.length]);
@@ -71,6 +82,7 @@ const useHeroSection = () => {
     heroTitle1,
     heroTitle2,
     handleNextSlide,
+    imagesLoaded,
   };
 };
 

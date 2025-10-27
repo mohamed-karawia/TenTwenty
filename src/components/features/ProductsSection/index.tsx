@@ -1,11 +1,6 @@
 import useProductsSection from "./useProductsSection";
-
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-}
+import OptimizedImage from "../../common/OptimizedImage";
+import { Product } from "../../../types";
 
 interface ProductsSectionProps {
   products: Product[];
@@ -21,11 +16,11 @@ const ProductsSection = ({ products }: ProductsSectionProps) => {
     wrapperRef,
     qualityProductsText,
     descriptionText,
-    ARC_SIZE,
+    arcSize,
     cardWidth,
     cardHeight,
     carouselHeight,
-    len,
+    productCount,
     onMouseDown,
   } = useProductsSection({ products });
 
@@ -72,7 +67,7 @@ const ProductsSection = ({ products }: ProductsSectionProps) => {
                       height: "40vh",
                       transformOrigin: `center calc(40vh * 5)`,
                       transform: `translateX(-50%) rotate(${
-                        i * (ARC_SIZE / len)
+                        i * (arcSize / productCount)
                       }deg)`,
                     }}
                   >
@@ -84,11 +79,12 @@ const ProductsSection = ({ products }: ProductsSectionProps) => {
                       }}
                     >
                       <div className="flex-1 overflow-hidden">
-                        <img
+                        <OptimizedImage
                           src={product.image}
                           alt={product.title}
                           className="w-full h-full object-cover"
-                          draggable="false"
+                          loading="lazy"
+                          draggable={false}
                         />
                       </div>
                     </div>
