@@ -27,7 +27,7 @@ const ProductsSection = ({ products }: ProductsSectionProps) => {
   return (
     <section
       ref={containerRef}
-      className="py-[53px] px-[49px] bg-white overflow-hidden"
+      className="py-[53px] px-[49px] bg-white overflow-hidden mb-5"
     >
       <div>
         <div className="text-center mb-16 flex flex-col gap-[30px]">
@@ -108,7 +108,6 @@ const ProductsSection = ({ products }: ProductsSectionProps) => {
                 wasActive && isTransitioning && !isActive;
               const showEnterAnimation = isActive && isTransitioning;
 
-              // Split text into lines for animation
               const titleLines = product.title.split(" ");
               const descriptionLines = product.description.match(
                 /.{1,50}(\s|$)/g
@@ -148,7 +147,7 @@ const ProductsSection = ({ products }: ProductsSectionProps) => {
                       ))}
                     </h3>
                   </div>
-                  <div className="overflow-hidden">
+                  <div className="overflow-hidden mb-5">
                     <div className="text-gray text-[22px] md:text-base font-medium md:font-normal">
                       {descriptionLines.map((line, i) => (
                         <div
