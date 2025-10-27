@@ -2,8 +2,11 @@
   "name": "assignment",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://mohamed-karawia.github.io/TenTwenty/",
   "main": "index.js",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --open"
@@ -21,6 +24,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
+    "gh-pages": "^6.3.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
   }
